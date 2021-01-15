@@ -6,7 +6,7 @@ import matplotlib.patches as pt
 import time
 import pickle
 
-import simulation
+from . import simulation
 
 class inference_framework():
     '''
