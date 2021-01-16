@@ -81,7 +81,7 @@ class people_flow():
         disrupt_point: Simulation is disrupted when passed time has surpassed "disrupt_point."
         Passed time is calculated by multiplying the inverse of "dt" by times of simulation.
 
-        save_format: シミュレーション結果を保存する形式を指定する。現在は"heat_map"だけしか使えません。"None"であれば結果を保存しません。
+        save_format: シミュレーション結果を保存する形式を指定する。現在は"heat_map"だけしか使えない。"None"であれば結果を保存しない。
         save_format: A format in which the results of simulation will be saved. Only "heat_map" is allowed now.
         If "None," the results won't be saved.
 
