@@ -305,7 +305,7 @@ class people_flow():
             stay_target.append(0.0)
             on_paint.append(False)
 
-        # numy.ndarrayにする
+        # numpy.ndarrayにする
         x = np.asarray(x)
         v_opt = np.asarray(v_opt)
         v = np.asarray(v)
