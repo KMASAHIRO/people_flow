@@ -1,5 +1,6 @@
 # people_flow
-NTTソフトウェアイノベーションセンタによる論文「人流シミュレーションのパラメータ推定手法」( https://db-event.jpn.org/deim2017/papers/146.pdf )の実装(非公式、一部改変)  
+NTTソフトウェアイノベーションセンタによる論文「人流シミュレーションのパラメータ推定手法」( https://db-event.jpn.org/deim2017/papers/146.pdf )の実装(非公式、一部改変)
+
 Unofficial implementation of "a way to infer parameters of people flow's simulation." (partially changed)( https://db-event.jpn.org/deim2017/papers/146.pdf )
 
 # 概要(Outline)
