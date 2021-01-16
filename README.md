@@ -65,7 +65,7 @@ maps = model.simulate()
 ```
 mapsは3次元numpy.ndarray  
 実行中、シミュレーション状況がmatplotlibにより描画される。  
-"maps" is a three dimentional numpy.ndarray.
+"maps" is a three dimentional numpy.ndarray.  
 While simulating, people flow is drawn by matlotlib.
 
 ## assessment_framework.py
