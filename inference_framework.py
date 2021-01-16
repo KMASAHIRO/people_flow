@@ -17,7 +17,7 @@ class inference_framework():
     def __init__(self, maps, people_num, target, R, min_p, wall_x, wall_y, in_target_d, dt,
                  save_params, v_range, repul_h_range, repul_m_range, p_range, n_trials):
         '''
-        maps: 3次元numpy.ndarray。人流データを表現するヒートマップ(各時刻においてGridの中にいる人数を表す)。
+        maps: 3次元numpy.ndarray。パラメータ推定する人流データを表現するヒートマップ(各時刻においてGridの中にいる人数を表す)。
         
         people_num, target, R, min_p, wall_x, wall_y, in_target_d,
         dt, save_params: 人流シミュレーションに使う変数。simulation.pyのpeople_flowを参照
@@ -263,7 +263,7 @@ class inference_framework_detail():
                  dt,
                  save_params, v_range, repul_h_range, repul_m_range, p_range, n_trials):
         '''
-        maps: 3次元numpy.ndarray。人流データを表現するヒートマップ(各時刻においてGridの中にいる人数を表す)。
+        maps: 3次元numpy.ndarray。パラメータ推定する人流データを表現するヒートマップ(各時刻においてGridの中にいる人数を表す)。
         
         people_num, v_arg, repul_h, repul_m, target, R, min_p, p_arg, wall_x, wall_y, in_target_d,
         dt, save_params: 人流シミュレーションに使う変数。simulation.pyのpeople_flowを参照
