@@ -17,7 +17,7 @@ class inference_framework():
     def __init__(self, maps, people_num, target, R, min_p, wall_x, wall_y, in_target_d, dt,
                  save_params, v_range, repul_h_range, repul_m_range, p_range, n_trials):
         '''
-        maps, people_num, v_arg, repul_h, repul_m, target, R, min_p, p_arg, wall_x, wall_y, in_target_d,
+        maps, people_num, target, R, min_p, wall_x, wall_y, in_target_d,
         dt, save_params: 人流シミュレーションに使う変数。simulation.pyのpeople_flowを参照
 
         v_range: (2,2)の形であるリスト型の変数。人の速さの平均と標準偏差を推定するとき、それぞれがとりうる値の範囲を表す。
