@@ -1,5 +1,5 @@
 # people_flow
-NTTソフトウェアイノベーションセンタによる論文「人流シミュレーションのパラメータ推定手法」( https://db-event.jpn.org/deim2017/papers/146.pdf )の実装(非公式、一部改変)
+論文「人流シミュレーションのパラメータ推定手法」( https://db-event.jpn.org/deim2017/papers/146.pdf )の実装(非公式、一部改変)
 
 Unofficial implementation of "a way to infer parameters of people flow's simulation." (partially changed)( https://db-event.jpn.org/deim2017/papers/146.pdf )
 
@@ -180,14 +180,14 @@ making an instance for inference
 ```python
 # inference_frameworkの場合
 # in case of inference_framework
-inference = people_flow.inference_framework.inference_franework(maps, people_num, target, R, min_p, wall_x, wall_y, in_target_d, dt, 
+inference = people_flow.inference_framework.inference_framework(maps, people_num, target, R, min_p, wall_x, wall_y, in_target_d, dt, 
               save_params, v_range, repul_h_range, repul_m_range, p_range, n_trials)
 ```
 
 ```python
 # inference_framework_detailの場合
 # in case of inference_framework_detail
-inference_detail = people_flow.inference_framework.inference_franework_detail(maps, people_num, v_arg, repul_h, repul_m, target, R, min_p, p_arg, wall_x, wall_y, in_target_d, dt, 
+inference_detail = people_flow.inference_framework.inference_framework_detail(maps, people_num, v_arg, repul_h, repul_m, target, R, min_p, p_arg, wall_x, wall_y, in_target_d, dt, 
               save_params, v_range, repul_h_range, repul_m_range, p_range, n_trials)
 ```
 3. パラメータ推定を実行(推定したパラメータを得る)  
