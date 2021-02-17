@@ -228,29 +228,31 @@ class assess_framework():
         ax.set_ylabel('best_value')
         ax.plot(y_best)
 
+    def set_study(self, name, path):
+        with open(path, 'rb') as f:
+            self.study[name] = pickle.load(f)
+
     def save_opt(self, name):
         # optunaのオブジェクトstudy(パラメータの最適化に関するデータを持つ)をピクル化して保存
         filename = name + '.txt'
         with open(filename, 'wb') as f:
             pickle.dump(self.study[name], f)
 
-    def whole_opt(self):
+    def whole_opt(self,opt_list=None):
         # すべてのパラメータを最適化する
-        self.__optimize(self.__SSD, self.n_trials, 'SSD')
-        self.paint_opt('SSD')
-        self.save_opt('SSD')
+        if opt_list is None:
+            opt_list = ["SSD", "SAD", "KL", "ZNCC"]
+        all_list = ["SSD","SAD","KL","ZNCC"]
+        all_func_list = [self.__SSD,self.__SAD,self.__KL,self.__ZNCC]
+        func_list = list()
+        for name in opt_list:
+            index = all_list.index(name)
+            func_list.append(all_func_list[index])
 
-        self.__optimize(self.__SAD, self.n_trials, 'SAD')
-        self.paint_opt('SAD')
-        self.save_opt('SAD')
-
-        self.__optimize(self.__KL, self.n_trials, 'KL')
-        self.paint_opt('KL')
-        self.save_opt('KL')
-
-        self.__optimize(self.__ZNCC, self.n_trials, 'ZNCC')
-        self.paint_opt('ZNCC')
-        self.save_opt('ZNCC')
+        for i in range(len(opt_list)):
+            self.__optimize(func_list[i],self.n_trials,opt_list[i])
+            self.paint_opt(opt_list[i])
+            self.save_opt(opt_list[i])
 
     def assess_v(self, ave, sd):
         # 積分を用いて、速さに関する推定したパラメータを評価
@@ -298,7 +300,6 @@ class assess_framework():
                 distance += a * np.log(b) * dp
                 p += dp
             p = self.min_p
-        distance /= len(self.p_arg)
         return distance
 
     def __get_best_params(self, name):
@@ -317,29 +318,33 @@ class assess_framework():
         distance_repul_m = dict()
         distance_p = dict()
 
-        params = self.__get_best_params('SSD')
-        distance_v['SSD'] = abs(self.assess_v(params[0], params[1]))
-        distance_repul_h['SSD'] = abs(self.assess_repul_h(params[2], params[3]))
-        distance_repul_m['SSD'] = abs(self.assess_repul_m(params[4], params[5]))
-        distance_p['SSD'] = abs(self.assess_p(params[6], params[7]))
+        if "SSD" in self.study:
+            params = self.__get_best_params('SSD')
+            distance_v['SSD'] = abs(self.assess_v(params[0], params[1]))
+            distance_repul_h['SSD'] = abs(self.assess_repul_h(params[2], params[3]))
+            distance_repul_m['SSD'] = abs(self.assess_repul_m(params[4], params[5]))
+            distance_p['SSD'] = abs(self.assess_p(params[6], params[7]))
 
-        params = self.__get_best_params('SAD')
-        distance_v['SAD'] = abs(self.assess_v(params[0], params[1]))
-        distance_repul_h['SAD'] = abs(self.assess_repul_h(params[2], params[3]))
-        distance_repul_m['SAD'] = abs(self.assess_repul_m(params[4], params[5]))
-        distance_p['SAD'] = abs(self.assess_p(params[6], params[7]))
+        if "SAD" in self.study:
+            params = self.__get_best_params('SAD')
+            distance_v['SAD'] = abs(self.assess_v(params[0], params[1]))
+            distance_repul_h['SAD'] = abs(self.assess_repul_h(params[2], params[3]))
+            distance_repul_m['SAD'] = abs(self.assess_repul_m(params[4], params[5]))
+            distance_p['SAD'] = abs(self.assess_p(params[6], params[7]))
 
-        params = self.__get_best_params('KL')
-        distance_v['KL'] = abs(self.assess_v(params[0], params[1]))
-        distance_repul_h['KL'] = abs(self.assess_repul_h(params[2], params[3]))
-        distance_repul_m['KL'] = abs(self.assess_repul_m(params[4], params[5]))
-        distance_p['KL'] = abs(self.assess_p(params[6], params[7]))
+        if "KL" in self.study:
+            params = self.__get_best_params('KL')
+            distance_v['KL'] = abs(self.assess_v(params[0], params[1]))
+            distance_repul_h['KL'] = abs(self.assess_repul_h(params[2], params[3]))
+            distance_repul_m['KL'] = abs(self.assess_repul_m(params[4], params[5]))
+            distance_p['KL'] = abs(self.assess_p(params[6], params[7]))
 
-        params = self.__get_best_params('ZNCC')
-        distance_v['ZNCC'] = abs(self.assess_v(params[0], params[1]))
-        distance_repul_h['ZNCC'] = abs(self.assess_repul_h(params[2], params[3]))
-        distance_repul_m['ZNCC'] = abs(self.assess_repul_m(params[4], params[5]))
-        distance_p['ZNCC'] = abs(self.assess_p(params[6], params[7]))
+        if "ZNCC" in self.study:
+            params = self.__get_best_params('ZNCC')
+            distance_v['ZNCC'] = abs(self.assess_v(params[0], params[1]))
+            distance_repul_h['ZNCC'] = abs(self.assess_repul_h(params[2], params[3]))
+            distance_repul_m['ZNCC'] = abs(self.assess_repul_m(params[4], params[5]))
+            distance_p['ZNCC'] = abs(self.assess_p(params[6], params[7]))
 
         best_combi[min(distance_v, key=distance_v.get) + '_v'] = self.__get_best_params(
             min(distance_v, key=distance_v.get))
@@ -408,6 +413,9 @@ class assess_framework():
         i = 1
 
         for name in names:
+            if name not in self.study:
+                i += 1
+                continue
             params = self.__get_best_params(name)[:2]
             x_guess, y_guess = self.__graph_v(params[0], params[1])
             x_real, y_real = self.__graph_v(self.v_arg[0], self.v_arg[1])
@@ -425,6 +433,9 @@ class assess_framework():
         i = 1
 
         for name in names:
+            if name not in self.study:
+                i += 1
+                continue
             params = self.__get_best_params(name)[2:4]
             x_guess, y_guess = self.__graph_repul_h(params[0], params[1])
             x_real, y_real = self.__graph_repul_h(self.repul_h[0], self.repul_h[1])
@@ -442,6 +453,9 @@ class assess_framework():
         i = 1
 
         for name in names:
+            if name not in self.study:
+                i += 1
+                continue
             params = self.__get_best_params(name)[4:6]
             x_guess, y_guess = self.__graph_repul_m(params[0], params[1])
             x_real, y_real = self.__graph_repul_m(self.repul_m[0], self.repul_m[1])
@@ -459,6 +473,9 @@ class assess_framework():
         k = 1
 
         for name in names:
+            if name not in self.study:
+                k += 1
+                continue
             for i in range(len(self.p_arg)):
                 params = self.__get_best_params(name)[6:]
                 x_guess, y_guess = self.__graph_p(params[2 * i], params[2 * i + 1])
@@ -970,78 +987,40 @@ class assess_framework_detail():
         ax.set_ylabel('best_value')
         ax.plot(y_best)
 
+    def set_study(self, name, path):
+        with open(path, 'rb') as f:
+            self.study[name] = pickle.load(f)
+
     def save_opt(self, name):
         # optunaのオブジェクトstudy(パラメータの最適化に関するデータを持つ)をピクル化して保存
         filename = name + '.txt'
         with open(filename, 'wb') as f:
             pickle.dump(self.study[name], f)
 
-    def whole_opt(self):
-
+    def whole_opt(self,opt_list=None):
         # すべてのパラメータを最適化する
-        self.__optimize(self.__SSD_v, self.n_trials, 'SSD_v')
-        self.paint_opt('SSD_v')
-        self.save_opt('SSD_v')
+        if opt_list is None:
+            opt_list = ["SSD_v", "SSD_repul_h", "SSD_repul_m", "SSD_p", \
+                        "SAD_v", "SAD_repul_h", "SAD_repul_m", "SAD_p", \
+                        "KL_v", "KL_repul_h", "KL_repul_m", "KL_p", \
+                        "ZNCC_v", "ZNCC_repul_h", "ZNCC_repul_m", "ZNCC_p"]
+        all_list = ["SSD_v","SSD_repul_h","SSD_repul_m","SSD_p",\
+                                 "SAD_v","SAD_repul_h","SAD_repul_m","SAD_p",\
+                                 "KL_v","KL_repul_h","KL_repul_m","KL_p",\
+                                 "ZNCC_v","ZNCC_repul_h","ZNCC_repul_m","ZNCC_p"]
+        all_func_list = [self.__SSD_v,self.__SSD_repul_h,self.__SSD_repul_m,self.__SSD_p, \
+                         self.__SAD_v,self.__SAD_repul_h,self.__SAD_repul_m,self.__SAD_p, \
+                         self.__KL_v,self.__KL_repul_h,self.__KL_repul_m,self.__KL_p, \
+                         self.__ZNCC_v,self.__ZNCC_repul_h,self.__ZNCC_repul_m,self.__ZNCC_p,]
+        func_list = list()
+        for name in opt_list:
+            index = all_list.index(name)
+            func_list.append(all_func_list[index])
 
-        self.__optimize(self.__SSD_repul_h, self.n_trials, 'SSD_repul_h')
-        self.paint_opt('SSD_repul_h')
-        self.save_opt('SSD_repul_h')
-
-        self.__optimize(self.__SSD_repul_m, self.n_trials, 'SSD_repul_m')
-        self.paint_opt('SSD_repul_m')
-        self.save_opt('SSD_repul_m')
-
-        self.__optimize(self.__SSD_p, self.n_trials, 'SSD_p')
-        self.paint_opt('SSD_p')
-        self.save_opt('SSD_p')
-
-        self.__optimize(self.__SAD_v, self.n_trials, 'SAD_v')
-        self.paint_opt('SAD_v')
-        self.save_opt('SAD_v')
-
-        self.__optimize(self.__SAD_repul_h, self.n_trials, 'SAD_repul_h')
-        self.paint_opt('SAD_repul_h')
-        self.save_opt('SAD_repul_h')
-
-        self.__optimize(self.__SAD_repul_m, self.n_trials, 'SAD_repul_m')
-        self.paint_opt('SAD_repul_m')
-        self.save_opt('SAD_repul_m')
-
-        self.__optimize(self.__SAD_p, self.n_trials, 'SAD_p')
-        self.paint_opt('SAD_p')
-        self.save_opt('SAD_p')
-
-        self.__optimize(self.__KL_v, self.n_trials, 'KL_v')
-        self.paint_opt('KL_v')
-        self.save_opt('KL_v')
-
-        self.__optimize(self.__KL_repul_h, self.n_trials, 'KL_repul_h')
-        self.paint_opt('KL_repul_h')
-        self.save_opt('KL_repul_h')
-
-        self.__optimize(self.__KL_repul_m, self.n_trials, 'KL_repul_m')
-        self.paint_opt('KL_repul_m')
-        self.save_opt('KL_repul_m')
-
-        self.__optimize(self.__KL_p, self.n_trials, 'KL_p')
-        self.paint_opt('KL_p')
-        self.save_opt('KL_p')
-
-        self.__optimize(self.__ZNCC_v, self.n_trials, 'ZNCC_v')
-        self.paint_opt('ZNCC_v')
-        self.save_opt('ZNCC_v')
-
-        self.__optimize(self.__ZNCC_repul_h, self.n_trials, 'ZNCC_repul_h')
-        self.paint_opt('ZNCC_repul_h')
-        self.save_opt('ZNCC_repul_h')
-
-        self.__optimize(self.__ZNCC_repul_m, self.n_trials, 'ZNCC_repul_m')
-        self.paint_opt('ZNCC_repul_m')
-        self.save_opt('ZNCC_repul_m')
-
-        self.__optimize(self.__ZNCC_p, self.n_trials, 'ZNCC_p')
-        self.paint_opt('ZNCC_p')
-        self.save_opt('ZNCC_p')
+        for i in range(len(opt_list)):
+            self.__optimize(func_list[i], self.n_trials, opt_list[i])
+            self.paint_opt(opt_list[i])
+            self.save_opt(opt_list[i])
 
     def assess_v(self, ave, sd):
         # 積分を用いて、速さに関する推定したパラメータを評価
@@ -1089,7 +1068,6 @@ class assess_framework_detail():
                 distance += a * np.log(b) * dp
                 p += dp
             p = self.min_p
-        distance /= len(self.p_arg)
         return distance
 
     def __get_best_params(self, name):
@@ -1108,44 +1086,60 @@ class assess_framework_detail():
         distance_repul_m = dict()
         distance_p = dict()
 
-        params = self.__get_best_params('SSD_v')
-        distance_v['SSD_v'] = abs(self.assess_v(params[0], params[1]))
-        params = self.__get_best_params('SAD_v')
-        distance_v['SAD_v'] = abs(self.assess_v(params[0], params[1]))
-        params = self.__get_best_params('KL_v')
-        distance_v['KL_v'] = abs(self.assess_v(params[0], params[1]))
-        params = self.__get_best_params('ZNCC_v')
-        distance_v['ZNCC_v'] = abs(self.assess_v(params[0], params[1]))
+        if "SSD_v" in self.study:
+            params = self.__get_best_params('SSD_v')
+            distance_v['SSD_v'] = self.assess_v(params[0], params[1])
+        if "SAD_v" in self.study:
+            params = self.__get_best_params('SAD_v')
+            distance_v['SAD_v'] = self.assess_v(params[0], params[1])
+        if "KL_v" in self.study:
+            params = self.__get_best_params('KL_v')
+            distance_v['KL_v'] = self.assess_v(params[0], params[1])
+        if "ZNCC_v" in self.study:
+            params = self.__get_best_params('ZNCC_v')
+            distance_v['ZNCC_v'] = self.assess_v(params[0], params[1])
         best_combi[min(distance_v, key=distance_v.get)] = self.__get_best_params(min(distance_v))
 
-        params = self.__get_best_params('SSD_repul_h')
-        distance_repul_h['SSD_repul_h'] = abs(self.assess_repul_h(params[0], params[1]))
-        params = self.__get_best_params('SAD_repul_h')
-        distance_repul_h['SAD_repul_h'] = abs(self.assess_repul_h(params[0], params[1]))
-        params = self.__get_best_params('KL_repul_h')
-        distance_repul_h['KL_repul_h'] = abs(self.assess_repul_h(params[0], params[1]))
-        params = self.__get_best_params('ZNCC_repul_h')
-        distance_repul_h['ZNCC_repul_h'] = abs(self.assess_repul_h(params[0], params[1]))
+        if "SSD_repul_h" in self.study:
+            params = self.__get_best_params('SSD_repul_h')
+            distance_repul_h['SSD_repul_h'] = self.assess_repul_h(params[0], params[1])
+        if "SAD_repul_h" in self.study:
+            params = self.__get_best_params('SAD_repul_h')
+            distance_repul_h['SAD_repul_h'] = self.assess_repul_h(params[0], params[1])
+        if "KL_repul_h" in self.study:
+            params = self.__get_best_params('KL_repul_h')
+            distance_repul_h['KL_repul_h'] = self.assess_repul_h(params[0], params[1])
+        if "ZNCC_repul_h" in self.study:
+            params = self.__get_best_params('ZNCC_repul_h')
+            distance_repul_h['ZNCC_repul_h'] = self.assess_repul_h(params[0], params[1])
         best_combi[min(distance_repul_h, key=distance_repul_h.get)] = self.__get_best_params(min(distance_repul_h))
 
-        params = self.__get_best_params('SSD_repul_m')
-        distance_repul_m['SSD_repul_m'] = abs(self.assess_repul_m(params[0], params[1]))
-        params = self.__get_best_params('SAD_repul_m')
-        distance_repul_m['SAD_repul_m'] = abs(self.assess_repul_m(params[0], params[1]))
-        params = self.__get_best_params('KL_repul_m')
-        distance_repul_m['KL_repul_m'] = abs(self.assess_repul_m(params[0], params[1]))
-        params = self.__get_best_params('ZNCC_repul_m')
-        distance_repul_m['ZNCC_repul_m'] = abs(self.assess_repul_m(params[0], params[1]))
+        if "SSD_repul_m" in self.study:
+            params = self.__get_best_params('SSD_repul_m')
+            distance_repul_m['SSD_repul_m'] = self.assess_repul_m(params[0], params[1])
+        if "SAD_repul_m" in self.study:
+            params = self.__get_best_params('SAD_repul_m')
+            distance_repul_m['SAD_repul_m'] = self.assess_repul_m(params[0], params[1])
+        if "KL_repul_m" in self.study:
+            params = self.__get_best_params('KL_repul_m')
+            distance_repul_m['KL_repul_m'] = self.assess_repul_m(params[0], params[1])
+        if "ZNCC_repul_m":
+            params = self.__get_best_params('ZNCC_repul_m')
+            distance_repul_m['ZNCC_repul_m'] = self.assess_repul_m(params[0], params[1])
         best_combi[min(distance_repul_m, key=distance_repul_m.get)] = self.__get_best_params(min(distance_repul_m))
 
-        params = self.__get_best_params('SSD_p')
-        distance_p['SSD_p'] = abs(self.assess_p(params[0], params[1]))
-        params = self.__get_best_params('SAD_p')
-        distance_p['SAD_p'] = abs(self.assess_p(params[0], params[1]))
-        params = self.__get_best_params('KL_p')
-        distance_p['KL_p'] = abs(self.assess_p(params[0], params[1]))
-        params = self.__get_best_params('ZNCC_p')
-        distance_p['ZNCC_p'] = abs(self.assess_p(params[0], params[1]))
+        if "SSD_p" in self.study:
+            params = self.__get_best_params('SSD_p')
+            distance_p['SSD_p'] = self.assess_p(params[0], params[1])
+        if "SAD_p" in self.study:
+            params = self.__get_best_params('SAD_p')
+            distance_p['SAD_p'] = self.assess_p(params[0], params[1])
+        if "KL_p" in self.study:
+            params = self.__get_best_params('KL_p')
+            distance_p['KL_p'] = self.assess_p(params[0], params[1])
+        if "ZNCC_p" in self.study:
+            params = self.__get_best_params('ZNCC_p')
+            distance_p['ZNCC_p'] = self.assess_p(params[0], params[1])
         best_combi[min(distance_p, key=distance_p.get)] = self.__get_best_params(min(distance_p))
 
         return best_combi
@@ -1206,6 +1200,9 @@ class assess_framework_detail():
         i = 1
 
         for name in names:
+            if name not in self.study:
+                i += 1
+                continue
             params = self.__get_best_params(name)
             x_guess, y_guess = self.__graph_v(params[0], params[1])
             x_real, y_real = self.__graph_v(self.v_arg[0], self.v_arg[1])
@@ -1223,6 +1220,9 @@ class assess_framework_detail():
         i = 1
 
         for name in names:
+            if name not in self.study:
+                i += 1
+                continue
             params = self.__get_best_params(name)
             x_guess, y_guess = self.__graph_repul_h(params[0], params[1])
             x_real, y_real = self.__graph_repul_h(self.repul_h[0], self.repul_h[1])
@@ -1240,6 +1240,9 @@ class assess_framework_detail():
         i = 1
 
         for name in names:
+            if name not in self.study:
+                i += 1
+                continue
             params = self.__get_best_params(name)
             x_guess, y_guess = self.__graph_repul_m(params[0], params[1])
             x_real, y_real = self.__graph_repul_m(self.repul_m[0], self.repul_m[1])
@@ -1257,6 +1260,9 @@ class assess_framework_detail():
         k = 1
 
         for name in names:
+            if name not in self.study:
+                k += 1
+                continue
             for i in range(len(self.p_arg)):
                 params = self.__get_best_params(name)
                 x_guess, y_guess = self.__graph_p(params[2 * i], params[2 * i + 1])
