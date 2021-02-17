@@ -1,15 +1,16 @@
 # people_flow
 論文「人流シミュレーションのパラメータ推定手法」( https://db-event.jpn.org/deim2017/papers/146.pdf )の実装(非公式、一部改変)  
-・追記&nbsp;Google Colaboratoryでの実行例を公開しました。リンクは[こちら](https://colab.research.google.com/drive/10w2SaKBmlPgTQHj2IKeE6H5WmHPth04f?usp=sharing)
+・追記(2021/2/17) &nbsp; Google Colaboratoryでの実行例を公開しました。リンクは[こちら](https://colab.research.google.com/drive/10w2SaKBmlPgTQHj2IKeE6H5WmHPth04f?usp=sharing)
 
-Unofficial implementation of "a way to infer parameters of people flow's simulation." (partially changed)( https://db-event.jpn.org/deim2017/papers/146.pdf )
+Unofficial implementation of "a way to infer parameters of people flow's simulation." (partially changed)( https://db-event.jpn.org/deim2017/papers/146.pdf )  
+・P.S.(2021/2/17) &nbsp; I made a public Google Colaboratory page. This page demonstrates what I explain below. [Here](https://colab.research.google.com/drive/10w2SaKBmlPgTQHj2IKeE6H5WmHPth04f?usp=sharing) is the link.
 
 # 概要(Outline)
 上記のリンク先の論文の実装(非公式)  
 要約すると、やったことは
 1. Social Force Model (SFM)を用いた人流モデルの実装
-2. 人流データを1.のモデルに適用したときのパラメータの最適化に使う目的関数の評価モデルの実装
-3. 人流データを1.のモデルに適用したときのパラメータを求めるモデルを、2.の結果をもとに構築
+2. 人流データのパラメータの最適化に使う、目的関数の評価モデルの実装
+3. 人流データのパラメータを求めるモデルを、2.の結果をもとに構築
 ---
 Unofficial implementation of the paper above  
 To sum up, what I've done is
