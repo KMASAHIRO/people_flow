@@ -1,5 +1,5 @@
 # people_flow
-論文「人流シミュレーションのパラメータ推定手法」( https://db-event.jpn.org/deim2017/papers/146.pdf )の実装(非公式、一部改変)
+論文「人流シミュレーションのパラメータ推定手法」( https://db-event.jpn.org/deim2017/papers/146.pdf )の実装(非公式、一部改変)  
 ・追記
 Google Colaboratoryでの実行例を公開しました。リンクは[こちら](https://colab.research.google.com/drive/10w2SaKBmlPgTQHj2IKeE6H5WmHPth04f?usp=sharing)
 
