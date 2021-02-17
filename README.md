@@ -107,7 +107,7 @@ assessment = people_flow.assessment_framework.assess_framework(maps, people_num,
               save_params, v_range, repul_h_range, repul_m_range, p_range, n_trials)
 ```
 3. すべての目的関数を用いてパラメータ推定を実行  
-opt_list=["SSD","KL"]などとして引数にこれを指定することで、最適化に用いる目的関数を選択できる。分割して実行するときや特定のものを再最適化するときに使える。
+opt_list=["SSD","KL"]などとして引数にこれを指定することで、最適化に用いる目的関数を選択できる。分割して実行するときや特定のものを再最適化するときに使える。  
 inferring parameters using every objective function
 ```python
 assessment.whole_opt()
@@ -194,7 +194,7 @@ inference_detail = people_flow.inference_framework.inference_framework_detail(ma
               save_params, v_range, repul_h_range, repul_m_range, p_range, n_trials)
 ```
 3. パラメータ推定を実行(推定したパラメータを得る)  
-infer_dict=["v":"SSD","repul_h":"KL","repul_m":"ZNCC","p":"ZNCC"]などとして引数にこれを指定することで、最適化に用いる目的関数を選択できる。デフォルト(inference_framework.pyを参照)とは異なる目的関数を用いたいときに使える。
+infer_dict=["v":"SSD","repul_h":"KL","repul_m":"ZNCC","p":"ZNCC"]などとして引数にこれを指定することで、最適化に用いる目的関数を選択できる。デフォルト(inference_framework.pyを参照)とは異なる目的関数を用いたいときに使える。  
 inferring parameters (getting inferred parameters)
 ```python
 # inference_frameworkの場合
