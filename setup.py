@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="people_flow",
-    version="0.0.3",
+    version="0.0.4",
     author="KMASAHIRO",
     description="simulating people flow and infer the parameters from actual people flow data",
     long_description=long_description,
