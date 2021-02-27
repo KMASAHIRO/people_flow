@@ -1,8 +1,8 @@
 import subprocess
 
-subprocess.call(['pip','install','numpy==1.19.2'])
-subprocess.call(['pip','install','matplotlib==3.3.2'])
-subprocess.call(['pip','install','optuna==2.4.0'])
+subprocess.run(['pip','install','numpy==1.19.2'])
+subprocess.run(['pip','install','matplotlib==3.3.2'])
+subprocess.run(['pip','install','optuna==2.4.0'])
 
 from . import simulation
 from . import assessment_framework
