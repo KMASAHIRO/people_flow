@@ -6,6 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setuptools.setup(
     name="people_flow",
     version="0.0.6",
+    install_requires=["numpy>=1.19.2","matplotlib>=3.3.2","optuna>=2.4.0"],
     author="KMASAHIRO",
     description="simulating people flow and infer the parameters from actual people flow data",
     long_description=long_description,
